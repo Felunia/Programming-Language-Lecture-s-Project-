@@ -16,7 +16,7 @@ public class Lexer {
         }
     }
 
-    private static final Set<String> keywords = Set.of("tanımla", "olursa", "iken", "sayaç", "yaz");
+    private static final Set<String> keywords = Set.of("tanımla", "olursa", "iken", "say", "yaz");
 
     public static List<Token> tokenize(String input) {
         List<Token> tokens = new ArrayList<>();
