@@ -3,53 +3,72 @@ import java.util.*;
 public class Lexer {
 
     public static class Token {
-        public final String type;
-        public final String value;
+        public final String tür;
+        public final String değer;
 
-        public Token(String type, String value) {
-            this.type = type;
-            this.value = value;
+        public Token(String tür, String değer) {
+            this.tür = tür;
+            this.değer = değer;
         }
 
         public String toString() {
-            return "(" + type + ", " + value + ")";
+            return "(" + tür + ", " + değer + ")";
         }
     }
 
-    private static final Set<String> keywords = Set.of("tanımla", "olursa", "iken", "say", "yaz");
+    private static final Set<String> komutlar = Set.of("tanımla", "olursa", "iken", "say", "yaz");
 
-    public static List<Token> tokenize(String input) {
-        List<Token> tokens = new ArrayList<>();
-        String[] parts = input.split("\\s+|(?=[{}();=+\\-*/<>])|(?<=[{}();=+\\-*/<>])");
+    public static List<Token> ayıkla(String girdi) {
+        List<Token> tokenlar = new ArrayList<>();
 
-        for (String part : parts) {
-            if (part.isBlank()) continue;
+        // Parçalama: boşluk ve sembol ayrımı
+        String[] parçalar = girdi.split("\\s+|(?=[{}();=+\\-*/<>])|(?<=[{}();=+\\-*/<>])");
 
-            if (keywords.contains(part)) {
-                tokens.add(new Token("KEYWORD", part));
-            } else if (part.matches("[0-9]+")) {
-                tokens.add(new Token("NUMBER", part));
-            } else if (part.matches("[a-zA-ZçÇğĞöÖşŞüÜıİ][a-zA-Z0-9çÇğĞöÖşŞüÜıİ]*")) {
-                tokens.add(new Token("IDENTIFIER", part));
-            } else if (part.equals(";")) {
-                tokens.add(new Token("SEMICOLON", part));
-            } else if ("+-*/".contains(part)) {
-                tokens.add(new Token("OPERATOR", part));
-            } else if (part.equals("=")) {
-                tokens.add(new Token("ASSIGN", part));
+        for (String parça : parçalar) {
+            if (parça.isBlank()) continue;
+
+            if (komutlar.contains(parça)) {
+                tokenlar.add(new Token("KOMUT", parça));
+            } else if (parça.matches("[0-9]+")) {
+                tokenlar.add(new Token("SAYI", parça));
+            } else if (parça.matches("\".*\"")) {
+                tokenlar.add(new Token("METİN", parça));
+            } else if (parça.matches("[a-zA-ZçÇğĞöÖşŞüÜıİ][a-zA-Z0-9çÇğĞöÖşŞüÜıİ]*")) {
+                tokenlar.add(new Token("DEĞİŞKEN_ADI", parça));
+            } else if ("+-*/%".contains(parça)) {
+                tokenlar.add(new Token("İŞLEM", parça));
+            } else if (parça.matches("==|!=|<=|>=|<|>")) {
+                tokenlar.add(new Token("KARŞILAŞTIRMA", parça));
+            } else if (parça.equals("=")) {
+                tokenlar.add(new Token("ATAMA", parça));
+            } else if (parça.equals(";")) {
+                tokenlar.add(new Token("NOKTALI_VİRGÜL", parça));
+            } else if (parça.equals(",")) {
+                tokenlar.add(new Token("VİRGÜL", parça));
+            } else if (parça.equals("(") || parça.equals(")")) {
+                tokenlar.add(new Token("PARANTEZ", parça));
+            } else if (parça.equals("{") || parça.equals("}")) {
+                tokenlar.add(new Token("SÜSLÜ_PARANTEZ", parça));
             } else {
-                tokens.add(new Token("UNKNOWN", part));
+                tokenlar.add(new Token("BİLİNMEYEN", parça));
             }
         }
 
-        return tokens;
+        return tokenlar;
     }
 
     public static void main(String[] args) {
-        String code = "tanımla x; x = 5 + 3; yaz x;";
-        List<Token> result = tokenize(code);
-        for (Token token : result) {
-            System.out.println(token);
+        String kod = """
+            tanımla x;
+            x = 5 + 3;
+            olursa (x > 0) {
+                yaz "pozitif";
+            }
+        """;
+
+        List<Token> sonuç = ayıkla(kod);
+        for (Token t : sonuç) {
+            System.out.println(t);
         }
     }
 }
