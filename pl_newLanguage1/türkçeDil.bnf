@@ -1,0 +1,39 @@
+<program> ::= <komutlar>
+
+<komutlar> ::= <komut> ";" | <komut> ";" <komutlar>
+
+<komut> ::= <tanımlama>
+          | <atama>
+          | <koşullu>
+          | <sayaç_döngüsü>
+          | <iken_döngüsü>
+          | <yaz>
+
+<tanımlama> ::= "tanımla" <değişken>
+
+<atama> ::= <değişken> "=" <ifade>
+
+<ifade> ::= <değişken>
+         | <sayı>
+         | <ifade> <işlem> <ifade>
+
+<işlem> ::= "+" | "-" | "*" | "/"
+
+<koşullu> ::= "olursa" "(" <koşul> ")" <blok>
+
+<sayaç_döngüsü> ::= "sayaç" "(" <atama> ";" <koşul> ";" <atama> ")" <blok>
+
+<iken_döngüsü> ::= "iken" "(" <koşul> ")" <blok>
+
+<koşul> ::= <ifade> <karşılaştırma> <ifade>
+
+<karşılaştırma> ::= "==" | "!=" | ">" | "<" | ">=" | "<="
+
+<yaz> ::= "yaz" <ifade>
+
+<blok> ::= "{" <komutlar> "}"
+
+<değişken> ::= [a-zA-ZçÇğĞöÖşŞüÜıİ][a-zA-Z0-9çÇğĞöÖşŞüÜıİ]*
+
+<sayı> ::= [0-9]+
+
